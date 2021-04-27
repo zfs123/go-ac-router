@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zfs123/go-ac-router/v1/logger"
+	"github.com/zfs123/go-ac-router/logger"
 	"go.uber.org/zap"
 )
 

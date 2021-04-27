@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/urfave/cli/v2"
-	"github.com/zfs123/go-ac-router/v1/utils"
+	"github.com/zfs123/go-ac-router/utils"
 )
 
 const (
