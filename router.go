@@ -1,19 +1,30 @@
 package acrouter
 
 import (
+	"net/http"
 	"reflect"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 	"github.com/urfave/cli/v2"
 	"github.com/zfs123/go-ac-router/handle"
 	"github.com/zfs123/go-ac-router/utils"
 )
 
+type RouterConfig struct {
+	Addr      string
+	Port      int
+	DebugMode bool
+	Key       string
+	Cert      string
+}
+
 type Router struct {
-	api *ApiServer
-	cli *CliServer
+	api    *ApiServer
+	cli    *CliServer
+	config RouterConfig
 }
 
 func NewRouter(api *ApiServer, cli *CliServer) *Router {
@@ -112,4 +123,41 @@ func buildCliFlag(flag interface{}) (fields []cli.Flag) {
 		return true
 	})
 	return
+}
+
+func New(opts ...Option) (*Router, error) {
+	rc := RouterConfig{
+		Addr:      "127.0.0.1",
+		Port:      9527,
+		DebugMode: false,
+		Key:       "",
+		Cert:      "",
+	}
+
+	for _, opt := range opts {
+		opt(&rc)
+	}
+
+	api := NewApiServer(rc.Addr, rc.Port)
+	if api == nil {
+		return nil, errors.Errorf("new api server failed")
+	}
+	if rc.DebugMode {
+		api.SetDebug()
+	}
+
+	api.SetNoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "Page not found"})
+		return
+	})
+	cli := NewCliServer(api, nil)
+
+	router := NewRouter(api, cli)
+	router.config = rc
+
+	return router, nil
+}
+
+func (r *Router) Run() {
+	r.cli.Run()
 }

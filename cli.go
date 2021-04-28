@@ -64,6 +64,6 @@ func (cs *CliServer) AddCommand(command *cli.Command) {
 
 // Run cli app
 func (cs *CliServer) Run() error {
-	cs.App.Commands = append(cs.App.Commands, cs.docCommand, cs.apiCommand, cs.apiTlsCommand)
+	cs.App.Commands = append(cs.App.Commands, cs.apiCommand, cs.apiTlsCommand)
 	return cs.App.Run(os.Args)
 }

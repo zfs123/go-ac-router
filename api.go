@@ -1,6 +1,7 @@
 package acrouter
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -11,12 +12,12 @@ import (
 type ApiServer struct {
 	Engine   *gin.Engine
 	ipAddr   string
-	port     string
+	port     int
 	certFile string
 	keyFile  string
 }
 
-func NewApiServer(ipAddr, port string) *ApiServer {
+func NewApiServer(ipAddr string, port int) *ApiServer {
 	gin.SetMode(gin.ReleaseMode)
 	s := &ApiServer{
 		ipAddr: ipAddr,
@@ -27,7 +28,7 @@ func NewApiServer(ipAddr, port string) *ApiServer {
 	return s
 }
 
-func NewApiTlsServer(ipAddr, port, certFile, keyFile string) *ApiServer {
+func NewApiTlsServer(ipAddr string, port int, certFile, keyFile string) *ApiServer {
 	s := NewApiServer(ipAddr, port)
 	s.keyFile = keyFile
 	s.certFile = certFile
@@ -69,10 +70,10 @@ func (aps *ApiServer) SetNoRoute(handlerFunc gin.HandlerFunc) {
 
 // Run api server
 func (aps *ApiServer) Run() error {
-	return aps.Engine.Run(aps.ipAddr + ":" + aps.port)
+	return aps.Engine.Run(aps.ipAddr + ":" + strconv.Itoa(aps.port))
 }
 
 // Run api tls server
 func (aps *ApiServer) RunTLS() error {
-	return aps.Engine.RunTLS(aps.ipAddr+":"+aps.port, aps.certFile, aps.keyFile)
+	return aps.Engine.RunTLS(aps.ipAddr+":"+strconv.Itoa(aps.port), aps.certFile, aps.keyFile)
 }
