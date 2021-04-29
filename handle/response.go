@@ -33,12 +33,12 @@ func (resp *ApiResponse) Response(code int, data interface{}) {
 
 // Simple send success
 func (resp *ApiResponse) SendSimpleOk(msg string) {
-	resp.C.JSON(http.StatusOK, map[string]interface{}{"code": 1, "msg": msg})
+	resp.C.JSON(http.StatusOK, map[string]interface{}{"code": 0, "msg": msg})
 }
 
 // Simple send error
 func (resp *ApiResponse) SendSimpleFail(msg string) {
-	resp.C.JSON(http.StatusInternalServerError, map[string]interface{}{"code": 0, "msg": msg})
+	resp.C.JSON(http.StatusInternalServerError, map[string]interface{}{"code": 1, "msg": msg})
 }
 
 // ApiResponse implemented response of command

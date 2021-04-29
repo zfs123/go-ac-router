@@ -2,11 +2,8 @@ package acrouter
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zfs123/go-ac-router/logger"
-	"go.uber.org/zap"
 )
 
 type ApiServer struct {
@@ -38,23 +35,25 @@ func NewApiTlsServer(ipAddr string, port int, certFile, keyFile string) *ApiServ
 // Initialize middleware and use zap to record log
 // Recovery can record log and recover when the request crashes
 func (aps *ApiServer) setMiddleware() {
-	aps.Engine.Use(func(c *gin.Context) {
-		start := time.Now()
-		c.Next()
-		end := time.Now()
-		latency := end.Sub(start)
-		path := c.Request.URL.Path
-		clientIP := c.ClientIP()
-		method := c.Request.Method
-		statusCode := c.Writer.Status()
-		logger.Info("api request",
-			zap.Int("status_code", statusCode),
-			zap.Duration("latency", latency),
-			zap.String("client_ip", clientIP),
-			zap.String("method", method),
-			zap.String("path", path),
-		)
-	})
+	/*
+		aps.Engine.Use(func(c *gin.Context) {
+			start := time.Now()
+			c.Next()
+			end := time.Now()
+			latency := end.Sub(start)
+			path := c.Request.URL.Path
+			clientIP := c.ClientIP()
+			method := c.Request.Method
+			statusCode := c.Writer.Status()
+			logger.Info("api request",
+				zap.Int("status_code", statusCode),
+				zap.Duration("latency", latency),
+				zap.String("client_ip", clientIP),
+				zap.String("method", method),
+				zap.String("path", path),
+			)
+		})
+	*/
 	aps.Engine.Use(gin.Recovery())
 }
 

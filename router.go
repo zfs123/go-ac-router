@@ -59,7 +59,7 @@ func (r *Router) AddCliCommand(c *cli.Command) {
 	r.cli.AddCommand(c)
 }
 
-// Add api route and add doc item for generate documents
+// Add api route
 func (r *Router) AddApiRoute(path string, method string, description string, params interface{}, response interface{}, handleFunc handle.Func) {
 	autoAddApiRoute(r.api.Engine, path, method, func(context *gin.Context) {
 		handleFunc(handle.NewApiAction(context), handle.NewApiResponse(context))
@@ -147,7 +147,7 @@ func New(opts ...Option) (*Router, error) {
 	}
 
 	api.SetNoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "Page not found"})
+		c.JSON(http.StatusNotFound, gin.H{"code": 0, "message": "Page not found"})
 		return
 	})
 	cli := NewCliServer(api, nil)
